@@ -31,12 +31,7 @@ def chat():
 
     try:
         response = policy_assistant.answer_and_sources(user_question)
-        print('======>', response)
-        # {
-        #     "content":[{
-        #         "text": "Hi human"
-        #     }]
-        # }
+
         reply = response.get("answer")
         history.append({"role": "assistant", "content": reply})
         session["history"] = history
