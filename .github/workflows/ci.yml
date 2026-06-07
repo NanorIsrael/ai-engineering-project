@@ -10,7 +10,7 @@ jobs:
     environment: main
     steps:
       - name: Trigger Render Deploy
-      - run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
     
   smoke-test:
     needs: [deploy]  # This job waits for 'deploy' to finish successfully
