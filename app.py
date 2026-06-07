@@ -53,6 +53,10 @@ def clear():
     session.modified = True
     return jsonify({"ok": True})
 
+@app.route("/health", methods=["POST"])
+def health():
+    return jsonify({"ok": True})
+
 
 if __name__ == "__main__":
     app.run(debug=True, port='4000')
