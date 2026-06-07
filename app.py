@@ -1,12 +1,10 @@
 import os
 from flask import Flask, render_template, request, jsonify, session
 import uuid
+import policy_assistant
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-me-in-production")
-
-
-SYSTEM_PROMPT = "You are a helpful assistant. Keep responses concise and conversational."
 
 
 @app.route("/")
@@ -20,24 +18,26 @@ def index():
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
-    user_message = data.get("message", "").strip()
+    user_question = data.get("message", "").strip()
 
-    if not user_message:
+    if not user_question:
         return jsonify({"error": "Empty message"}), 400
 
     if "history" not in session:
         session["history"] = []
 
     history = session["history"]
-    history.append({"role": "user", "content": user_message})
+    history.append({"role": "user", "content": user_question})
 
     try:
-        response = {
-            "content":[{
-                "text": "Hi human"
-            }]
-        }
-        reply = response.get("content")[0].get("text")
+        response = policy_assistant.answer_and_sources(user_question)
+        print('======>', response)
+        # {
+        #     "content":[{
+        #         "text": "Hi human"
+        #     }]
+        # }
+        reply = response.get("answer")
         history.append({"role": "assistant", "content": reply})
         session["history"] = history
         session.modified = True
@@ -57,6 +57,9 @@ def clear():
 def health():
     return jsonify({"ok": True})
 
+@app.route("/history", methods=["GET"])
+def history():
+    return jsonify(session.get("history", []))
 
 if __name__ == "__main__":
     app.run(debug=True, port='4000')
