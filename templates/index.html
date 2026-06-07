@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatbot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes bounce-dot {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+    .dot { animation: bounce-dot 1.2s infinite; }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    #messages::-webkit-scrollbar { width: 4px; }
+    #messages::-webkit-scrollbar-thumb { background: white; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4">
+
+  <div class="flex flex-col w-full max-w-2xl h-[90vh] bg-[#1a1c24] rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+
+    <!-- Header -->
+    <div class="flex items-center gap-3 px-5 py-4 bg-[#0e1117] border-b border-gray-200 flex-shrink-0">
+      <div class="w-9 h-9 rounded-full bg-violet-100 border border-violet-200 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-violet-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/>
+        </svg>
+      </div>
+      <div class="flex-1">
+        <p class="text-sm font-medium text-gray-900">Assistant</p>
+        <p class="text-xs text-gray-400 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+          Online
+        </p>
+      </div>
+      <button
+        id="clear-btn"
+        class="text-xs text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg px-3 py-1.5 transition-colors hover:bg-gray-50"
+      >
+        Clear
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div id="messages" class="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-4">
+      <!-- Initial bot message -->
+      <div class="flex items-end gap-2" id="welcome-msg">
+        <div class="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center flex-shrink-0 text-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/>
+          </svg>
+        </div>
+        <div class="flex flex-col gap-1 max-w-[68%] items-start">
+          <div class="px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm leading-relaxed bg-gray-100 border border-gray-200 text-gray-800">
+            Hi! How can I help you today?
+          </div>
+          <span class="text-xs text-gray-400 px-1" id="welcome-time"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="px-4 py-4 bg-[#0e1117] border-t border-gray-200 flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <input
+          id="chat-input"
+          type="text"
+          placeholder="Type a message…"
+          autocomplete="off"
+          class="flex-1 h-11 px-4 text-sm bg-gray-100 border border-transparent rounded-full text-gray-900 placeholder-gray-400 focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 disabled:opacity-50 transition"
+        />
+        <button
+          id="send-btn"
+          aria-label="Send message"
+          class="w-11 h-11 rounded-full bg-violet-600 hover:bg-violet-500 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all flex-shrink-0"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const messagesEl = document.getElementById('messages');
+    const inputEl    = document.getElementById('chat-input');
+    const sendBtn    = document.getElementById('send-btn');
+    const clearBtn   = document.getElementById('clear-btn');
+
+    document.getElementById('welcome-time').textContent = nowTime();
+
+    function nowTime() {
+      return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function scrollBottom() {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function botIcon() {
+      return `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/>
+      </svg>`;
+    }
+
+    function userIcon() {
+      return `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>`;
+    }
+
+    function appendMessage(role, text) {
+      const isUser = role === 'user';
+      const time   = nowTime();
+      const row    = document.createElement('div');
+      row.className = `flex items-end gap-2 ${isUser ? 'flex-row-reverse' : ''}`;
+      row.innerHTML = `
+        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isUser ? 'bg-violet-600 text-violet-100' : 'bg-gray-100 border border-gray-200 text-gray-500'}">
+          ${isUser ? userIcon() : botIcon()}
+        </div>
+        <div class="flex flex-col gap-1 max-w-[68%] ${isUser ? 'items-end' : 'items-start'}">
+          <div class="px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${isUser ? 'bg-violet-600 text-white rounded-br-sm' : 'bg-gray-100 border border-gray-200 text-gray-800 rounded-bl-sm'}">
+            ${escapeHtml(text)}
+          </div>
+          <span class="text-xs text-gray-400 px-1">${time}</span>
+        </div>`;
+      messagesEl.appendChild(row);
+      scrollBottom();
+    }
+
+    function showTyping() {
+      const row = document.createElement('div');
+      row.id = 'typing';
+      row.className = 'flex items-end gap-2';
+      row.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center flex-shrink-0 text-gray-500">
+          ${botIcon()}
+        </div>
+        <div class="bg-gray-100 border border-gray-200 rounded-2xl rounded-bl-sm px-4 py-3 flex gap-1.5 items-center">
+          <span class="dot w-1.5 h-1.5 rounded-full bg-gray-400 inline-block"></span>
+          <span class="dot w-1.5 h-1.5 rounded-full bg-gray-400 inline-block"></span>
+          <span class="dot w-1.5 h-1.5 rounded-full bg-gray-400 inline-block"></span>
+        </div>`;
+      messagesEl.appendChild(row);
+      scrollBottom();
+    }
+
+    function removeTyping() {
+      document.getElementById('typing')?.remove();
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/\n/g, '<br>');
+    }
+
+    function setLoading(state) {
+      inputEl.disabled = state;
+      sendBtn.disabled = state;
+    }
+
+    async function sendMessage() {
+      const text = inputEl.value.trim();
+      if (!text || sendBtn.disabled) return;
+
+      inputEl.value = '';
+      appendMessage('user', text);
+      setLoading(true);
+      showTyping();
+
+      try {
+        const res  = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text }),
+        });
+        const data = await res.json();
+        removeTyping();
+        appendMessage('bot', data.reply || data.error || 'Something went wrong.');
+      } catch {
+        removeTyping();
+        appendMessage('bot', 'Network error. Please try again.');
+      } finally {
+        setLoading(false);
+        inputEl.focus();
+      }
+    }
+
+    async function clearChat() {
+      await fetch('/clear', { method: 'POST' });
+      messagesEl.innerHTML = '';
+      appendMessage('bot', 'Hi! How can I help you today?');
+      inputEl.focus();
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    clearBtn.addEventListener('click', clearChat);
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+  </script>
+
+</body>
+</html>

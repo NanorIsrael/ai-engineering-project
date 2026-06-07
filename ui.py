@@ -25,6 +25,10 @@ if user_question := st.chat_input("Which policy do you want to know about today?
     response = policy_assistant.answer_and_sources(user_question)
     if response:
           with st.chat_message("assistant"):
-                  st.markdown(response['answer'])
-                  st.markdown(response['sources'])
-                  st.session_state.messages.append({"role": "assistant", "content": response['answer']})
+                st.markdown(response['answer'])
+                if response['answer'] != "I cannot find this information in the policy.":
+                    st.markdown('Sources')
+                    st.markdown(response['sources'])
+                st.session_state.messages.append({"role": "assistant", "content": response['answer']})
+# 1a1c24
+# [#0e1117]
