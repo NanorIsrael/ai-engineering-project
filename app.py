@@ -53,7 +53,7 @@ def clear():
     session.modified = True
     return jsonify({"ok": True})
 
-@app.route("/health", methods=["POST"])
+@app.route("/health", methods=["GET"])
 def health():
     return jsonify({"ok": True})
 
