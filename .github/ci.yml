@@ -11,3 +11,11 @@ jobs:
     steps:
       - name: Trigger Render Deploy
       - run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+    
+  smoke-test:
+    needs: [deploy]  # This job waits for 'deploy' to finish successfully
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify Health Endpoint
+        run: |
+          curl --fail --retry 36 --retry-delay 10 "https://keleweleai.onrender.com/health"
