@@ -9,3 +9,4 @@ openai==1.82.0
 # streamlit==1.45.1
 gdown==5.2.1
 flask>=3.0.0
+gunicorn==21.2.0
