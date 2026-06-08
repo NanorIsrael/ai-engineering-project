@@ -4,7 +4,7 @@ from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-
+from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from typing import Any, Iterable
 
@@ -65,9 +65,11 @@ def get_embedding_model(model_name: str = "sentence-transformers/all-MiniLM-L6-v
     :return: The embedding model.
     :rtype: HuggingFaceEmbeddings
     """
-    from langchain_huggingface import HuggingFaceEmbeddings
+    # from langchain_huggingface import HuggingFaceEmbeddings
 
-    return HuggingFaceEmbeddings(model_name=model_name)
+    return OpenAIEmbeddings()
+
+# HuggingFaceEmbeddings(model_name=model_name)
 
 
 def create_vector_store(chunks: list[Document], embedding_model: Embeddings = get_embedding_model(), path: str = "./chromadb") -> Chroma:
