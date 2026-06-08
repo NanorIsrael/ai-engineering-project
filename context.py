@@ -4,7 +4,7 @@ from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
+# from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from typing import Any, Iterable
 
