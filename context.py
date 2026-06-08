@@ -6,7 +6,7 @@ from langchain_core.embeddings import Embeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from langchain_chroma import Chroma
-from typing import Iterable
+from typing import Any, Iterable
 
 def download_context_data(pdfs: Iterable[dict[str, str]], path: str = "./context_data") -> None:
     """
@@ -56,7 +56,7 @@ def chunk_context_data(context_data: list[Document]) -> list[Document]:
     return text_splitter.split_documents(context_data)
 
 
-def get_embedding_model(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
+def get_embedding_model(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> Any:
     """
     Gets an embedding model for vectorizing the context data.
 
