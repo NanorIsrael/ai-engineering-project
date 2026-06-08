@@ -65,11 +65,9 @@ def get_embedding_model(model_name: str = "sentence-transformers/all-MiniLM-L6-v
     :return: The embedding model.
     :rtype: HuggingFaceEmbeddings
     """
-    # from langchain_huggingface import HuggingFaceEmbeddings
+    from langchain_huggingface import HuggingFaceEmbeddings
 
-    return OpenAIEmbeddings()
-
-# HuggingFaceEmbeddings(model_name=model_name)
+    return HuggingFaceEmbeddings(model_name=model_name)
 
 
 def create_vector_store(chunks: list[Document], embedding_model: Embeddings = get_embedding_model(), path: str = "./chromadb") -> Chroma:
