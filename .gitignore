@@ -4,3 +4,4 @@ __pycache__/
 chromadb/
 .env
 script.txt
+.DS_Store

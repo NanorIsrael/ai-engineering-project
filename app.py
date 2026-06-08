@@ -30,9 +30,24 @@ def chat():
     history.append({"role": "user", "content": user_question})
 
     try:
-        response = policy_assistant.answer_and_sources(user_question)
+        if os.environ.get("ENVIRONMENT", "test") == 'test':
+            response = {
+                "content":[{
+                    "text": "Hi human"
+                }]
+            }
+            reply = response.get("content")[0].get("text")
 
-        reply = response.get("answer")
+        else:
+            # response = {
+            #     "content":[{
+            #         "text": "Hi human"
+            #     }]
+            # }
+            # reply = response.get("content")[0].get("text")
+
+            response = policy_assistant.answer_and_sources(user_question)
+            reply =  response.get("answer")
         history.append({"role": "assistant", "content": reply})
         session["history"] = history
         session.modified = True

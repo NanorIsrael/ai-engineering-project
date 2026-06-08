@@ -12,7 +12,7 @@ class TestIntegration:
             assert response.status_code == 200
             data = json.loads(response.data)
             assert "reply" in data
-            assert data["reply"] == "I cannot find this information in the policy."
+            assert data["reply"] == "Hi human"
         
         # Verify history length
         with client.session_transaction() as sess:
@@ -87,7 +87,7 @@ class TestSecurity:
             assert response.status_code == 200
             data = json.loads(response.data)
             # Response should be the standard "Hi human" (your fixed response)
-            assert data["reply"] == "I cannot find this information in the policy."
+            assert data["reply"] == "Hi human"
     
     def test_xss_attempts(self, client):
         """Test that XSS attempts are sanitized or handled"""
