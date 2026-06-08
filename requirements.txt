@@ -2,7 +2,7 @@ pypdf==5.5.0
 langchain-text-splitters==0.3.8
 sentence_transformers==4.1.0
 langchain-chroma==0.2.4
-# langchain-huggingface==0.2.0
+langchain-huggingface==0.2.0
 openai==1.82.0
 gdown==5.2.1
 flask>=3.0.0
