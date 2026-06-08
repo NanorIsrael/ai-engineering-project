@@ -111,7 +111,7 @@ if __name__ == "__main__":
    context_data = load_context_data()
    chunks = chunk_context_data(context_data)
    embedding_model = get_embedding_model()
-   vector_store = get_vector_store(embedding_model)
+   vector_store = create_vector_store(embedding_model)
     
    retrieved_chunks = vector_store.similarity_search("sexual harassment")
    print(f"Query retrieved {len(retrieved_chunks)} chunks.")
