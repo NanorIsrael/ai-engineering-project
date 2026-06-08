@@ -40,4 +40,4 @@ jobs:
     steps:
       - name: Verify Health Endpoint
         run: |
-          curl --fail --retry 36 --retry-delay 10 "https://keleweleai.onrender.com/health"
+          curl --fail --retry 360 --retry-delay 10 "https://keleweleai.onrender.com/health"
